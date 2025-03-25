@@ -21,6 +21,10 @@ public class PlayerService {
     }
 
     public void createPlayer(Player player) {
+        Optional<Player> existingPlayer = playerDAO.get(player.getId());
+        if (existingPlayer.isPresent()) {
+            throw new IllegalArgumentException("Player with ID " + player.getId() + " already exists.");
+        }
         playerDAO.save(player);
     }
     public void updatePlayer(Integer id, Player player) {
