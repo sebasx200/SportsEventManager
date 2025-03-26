@@ -3,6 +3,7 @@ package com.ces3.project.ces3project.service;
 import com.ces3.project.ces3project.dao.PlayerDAO;
 import com.ces3.project.ces3project.model.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,14 @@ public class PlayerService {
     }
     public Optional<Player> getPlayerById(Integer id){
         return playerDAO.get(id);
+    }
+
+    public ArrayList<Player> getPlayersByIds(ArrayList<Integer> playerIds) {
+        ArrayList<Player> players = new ArrayList<>();
+        for (Integer id : playerIds) {
+            playerDAO.get(id).ifPresent(players::add);
+        }
+        return players;
     }
 
     public List<Player> getAllPlayers(){

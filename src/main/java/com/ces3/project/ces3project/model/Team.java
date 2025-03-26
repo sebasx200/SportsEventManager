@@ -1,5 +1,7 @@
 package com.ces3.project.ces3project.model;
 
+import com.ces3.project.ces3project.dto.PlayerDTO;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,17 +13,8 @@ public class Team {
     private String city;
     private Date fundationDate;
     private String logo;
-    private ArrayList<Player> teamPlayers;
-
-    public Team(String name, String sport, String city, Date fundationDate, String logo, ArrayList<Player> teamPlayers) {
-
-        this.name = name;
-        this.sport = sport;
-        this.city = city;
-        this.fundationDate = fundationDate;
-        this.logo = logo;
-        this.teamPlayers = teamPlayers;
-    }
+    private ArrayList<Integer> teamPlayers;
+    private ArrayList<PlayerDTO> players;
 
     public Team(String name, String sport, String city, Date fundationDate, String logo) {
         this.name = name;
@@ -29,6 +22,15 @@ public class Team {
         this.city = city;
         this.fundationDate = fundationDate;
         this.logo = logo;
+    }
+
+    public Team(String name, String sport, String city, Date fundationDate, String logo, ArrayList<Integer> teamPlayers) {
+        this.name = name;
+        this.sport = sport;
+        this.city = city;
+        this.fundationDate = fundationDate;
+        this.logo = logo;
+        this.teamPlayers = teamPlayers;
     }
 
     public Integer getId() {
@@ -79,9 +81,21 @@ public class Team {
         this.logo = logo;
     }
 
-    public ArrayList<Player> getTeamPlayers() { return teamPlayers;}
+    public ArrayList<Integer> getTeamPlayersIds() { return teamPlayers;}
 
-    public void setTeamPlayers(ArrayList<Player> teamPlayers) { this.teamPlayers = teamPlayers; }
+    public void setTeamPlayers(ArrayList<Integer> teamPlayers) { this.teamPlayers = teamPlayers; }
+
+    public ArrayList<Integer> getTeamPlayers() {
+        return teamPlayers;
+    }
+
+    public ArrayList<PlayerDTO> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(ArrayList<PlayerDTO> players) {
+        this.players = players;
+    }
 
     @Override
     public String toString() {
@@ -92,7 +106,8 @@ public class Team {
                 ", city='" + city + '\'' +
                 ", fundationDate=" + fundationDate +
                 ", logo='" + logo + '\'' +
-                ", playersId=" + teamPlayers +
+                ", teamPlayers=" + teamPlayers +
+                ", players=" + players +
                 '}';
     }
 }
