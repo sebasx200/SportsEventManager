@@ -3,6 +3,7 @@ package com.ces3.project.ces3project.controller;
 import com.ces3.project.ces3project.dao.PlayerDAO;
 import com.ces3.project.ces3project.model.Player;
 import com.ces3.project.ces3project.service.PlayerService;
+import com.ces3.project.ces3project.utils.UtilMethods;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -93,7 +94,7 @@ public class PlayerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
-        JsonObject reqBody = this.getParamsFromBody(req);
+        JsonObject reqBody = UtilMethods.getParamsFromBody(req);
         PrintWriter out = resp.getWriter();
 
         try {
@@ -117,19 +118,6 @@ public class PlayerServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             out.print("{\"message\": \"Error creating player: " + e.getMessage() + "\"}");
         }
-
         out.flush();
-    }
-
-    private JsonObject getParamsFromBody(HttpServletRequest request) throws IOException {
-        BufferedReader reader = request.getReader();
-        StringBuilder sb = new StringBuilder();
-        String line = reader.readLine();
-        while (line != null) {
-            sb.append(line + "\n");
-            line = reader.readLine();
-        }
-        reader.close();
-        return JsonParser.parseString(sb.toString()).getAsJsonObject();
     }
 }

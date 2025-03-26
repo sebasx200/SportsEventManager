@@ -2,6 +2,7 @@ package com.ces3.project.ces3project.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Team {
     private Integer id;
@@ -10,18 +11,24 @@ public class Team {
     private String city;
     private Date fundationDate;
     private String logo;
-    private ArrayList<Integer> playersId;
+    private ArrayList<Player> teamPlayers;
 
-    public Team() {}
+    public Team(String name, String sport, String city, Date fundationDate, String logo, ArrayList<Player> teamPlayers) {
 
-    public Team(Integer id, String name, String sport, String city, Date fundationDate, String logo, ArrayList<Integer> playersId) {
-        this.id = id;
         this.name = name;
         this.sport = sport;
         this.city = city;
         this.fundationDate = fundationDate;
         this.logo = logo;
-        this.playersId = playersId;
+        this.teamPlayers = teamPlayers;
+    }
+
+    public Team(String name, String sport, String city, Date fundationDate, String logo) {
+        this.name = name;
+        this.sport = sport;
+        this.city = city;
+        this.fundationDate = fundationDate;
+        this.logo = logo;
     }
 
     public Integer getId() {
@@ -72,13 +79,9 @@ public class Team {
         this.logo = logo;
     }
 
-    public ArrayList<Integer> getPlayersId() {
-        return playersId;
-    }
+    public ArrayList<Player> getTeamPlayers() { return teamPlayers;}
 
-    public void setPlayersId(ArrayList<Integer> playersId) {
-        this.playersId = playersId;
-    }
+    public void setTeamPlayers(ArrayList<Player> teamPlayers) { this.teamPlayers = teamPlayers; }
 
     @Override
     public String toString() {
@@ -89,7 +92,7 @@ public class Team {
                 ", city='" + city + '\'' +
                 ", fundationDate=" + fundationDate +
                 ", logo='" + logo + '\'' +
-                ", playersId=" + playersId +
+                ", playersId=" + teamPlayers +
                 '}';
     }
 }
