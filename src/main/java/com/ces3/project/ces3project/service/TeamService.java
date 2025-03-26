@@ -38,10 +38,8 @@ public class TeamService {
                 team.setId(UtilMethods.generateUniqueBigInteger(LENGTH_ID_TEAM).intValue());
                 teamDAO.save(team);
                 break;
-            case NAME_DUPLICATE:
-                throw new IllegalArgumentException("A team with the same name already exists.");
-            case SPORT_DUPLICATE:
-                throw new IllegalArgumentException("A team with the same sport already exists.");
+            case NAME_AND_SPORT_DUPLICATE:
+                throw new IllegalArgumentException("A team with the same name and sport already exists.");
         }
     }
     public void updateTeam(Integer id, Team team) {
@@ -53,17 +51,14 @@ public class TeamService {
 
     private DuplicateStatus isTeamDuplicate(Team team) {
         return teamDAO.getAll().stream()
-                .filter(existingTeam -> existingTeam.getName().equalsIgnoreCase(team.getName()))
-                .findFirst().map(t -> DuplicateStatus.NAME_DUPLICATE)
-                .orElseGet(() -> teamDAO.getAll().stream()
-                        .filter(existingTeam -> existingTeam.getSport().equalsIgnoreCase(team.getSport()))
-                        .findFirst().map(t -> DuplicateStatus.SPORT_DUPLICATE)
-                        .orElse(DuplicateStatus.NO_DUPLICATE));
+                .filter(existingTeam -> existingTeam.getName().equalsIgnoreCase(team.getName()) &&
+                        existingTeam.getSport().equalsIgnoreCase(team.getSport()))
+                .findFirst().map(t -> DuplicateStatus.NAME_AND_SPORT_DUPLICATE)
+                .orElse(DuplicateStatus.NO_DUPLICATE);
     }
 
     public enum DuplicateStatus {
-        NAME_DUPLICATE,
-        SPORT_DUPLICATE,
+        NAME_AND_SPORT_DUPLICATE,
         NO_DUPLICATE
     }
 }

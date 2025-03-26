@@ -9,12 +9,12 @@ import java.util.Optional;
 
 public class TeamDAO implements Dao<Team> {
 
-    private List<Team> teams = new ArrayList<>();
+    private final List<Team> teams = new ArrayList<>();
 
     @Override
     public Optional<Team> get(Integer id) {
         return teams.stream()
-                .filter(p -> p.getId().equals(id))
+                .filter(t -> t.getId().equals(id))
                 .findFirst();
     }
 

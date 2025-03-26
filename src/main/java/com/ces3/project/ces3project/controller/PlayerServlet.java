@@ -1,5 +1,6 @@
 package com.ces3.project.ces3project.controller;
 
+import com.ces3.project.ces3project.config.ServiceConfig;
 import com.ces3.project.ces3project.dao.PlayerDAO;
 import com.ces3.project.ces3project.model.Player;
 import com.ces3.project.ces3project.service.PlayerService;
@@ -24,15 +25,12 @@ import java.util.Optional;
 @WebServlet(name = "player-servlet", value = "/players")
 public class PlayerServlet extends HttpServlet {
 
-    private final PlayerService playerService;
-
-    public PlayerServlet() {
-        PlayerDAO playerDAO = new PlayerDAO();
-        this.playerService =  new PlayerService(playerDAO);
-    }
+    private PlayerService playerService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
+        playerService = ServiceConfig.getPlayerService();
+
         playerService.createPlayer(new Player(
                 1,
                 "Alberto",

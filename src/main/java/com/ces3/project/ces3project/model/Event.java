@@ -16,8 +16,7 @@ public class Event {
 
     public Event() {}
 
-    public Event(Integer id, String name, Date date, String place, String sport, ArrayList<Integer> teamsId, Integer capacity, Integer soldTickets, EventStatus status) {
-        this.id = id;
+    public Event(String name, Date date, String place, String sport, ArrayList<Integer> teamsId, Integer capacity, Integer soldTickets, EventStatus status) {
         this.name = name;
         this.date = date;
         this.place = place;
