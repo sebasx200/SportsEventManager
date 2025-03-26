@@ -19,7 +19,7 @@ public class ServiceConfig {
         playerDAO = new PlayerDAO();
         playerService = new PlayerService(playerDAO);
         teamDAO = new TeamDAO();
-        teamService = new TeamService(teamDAO);
+        teamService = new TeamService(teamDAO, playerService);
         eventDAO = new EventDAO();
         eventService = new EventService(eventDAO, teamService);
     }

@@ -8,6 +8,8 @@ import com.ces3.project.ces3project.service.PlayerService;
 import com.ces3.project.ces3project.service.TeamService;
 import com.ces3.project.ces3project.utils.UtilMethods;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import javax.servlet.ServletConfig;
@@ -71,12 +73,19 @@ public class TeamServlet extends HttpServlet {
         JsonObject reqBody = UtilMethods.getParamsFromBody(req);
         PrintWriter out = resp.getWriter();
         try {
+
+            JsonArray playersIdArray = reqBody.get("teamPlayers").getAsJsonArray();
+            ArrayList<Integer> teamPlayers = new ArrayList<>();
+            for (JsonElement element : playersIdArray) {
+                teamPlayers.add(element.getAsInt());
+            }
             teamService.createTeam(new Team(
                     reqBody.get("name").getAsString(),
                     reqBody.get("sport").getAsString(),
                     reqBody.get("city").getAsString(),
                     new Date(reqBody.get("fundationDate").getAsLong()),
-                    reqBody.get("logo").getAsString()
+                    reqBody.get("logo").getAsString(),
+                    teamPlayers
             ));
             resp.setStatus(HttpServletResponse.SC_CREATED);
             out.print("{\"message\": \"Team created successfully\"}");
