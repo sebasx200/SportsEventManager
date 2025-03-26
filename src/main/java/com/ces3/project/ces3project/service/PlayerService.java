@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class PlayerService {
-    private final PlayerDAO playerDAO;
+    PlayerDAO playerDAO;
 
     public PlayerService(PlayerDAO playerDAO) {
         this.playerDAO = playerDAO;

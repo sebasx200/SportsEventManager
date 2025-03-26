@@ -1,5 +1,6 @@
 package com.ces3.project.ces3project.controller;
 
+import com.ces3.project.ces3project.config.ServiceConfig;
 import com.ces3.project.ces3project.dao.PlayerDAO;
 import com.ces3.project.ces3project.dao.TeamDAO;
 import com.ces3.project.ces3project.model.Team;
@@ -22,16 +23,11 @@ import java.util.*;
 @WebServlet(name = "team-servlet", value = "/teams")
 public class TeamServlet extends HttpServlet {
 
-    private final TeamService teamService;
-
-    public TeamServlet() {
-        TeamDAO teamDAO = new TeamDAO();
-        this.teamService = new TeamService(teamDAO);
-    }
+    private TeamService teamService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-
+        teamService = ServiceConfig.getTeamService();
         teamService.createTeam(new Team(
                 "Deportivo Tapitas",
                 "Football",
@@ -41,7 +37,7 @@ public class TeamServlet extends HttpServlet {
         ));
         teamService.createTeam(new Team(
                 "Escombros FC",
-                "Baloncesto",
+                "Football",
                 "La Pintada",
                 new Date(20070413),
                 "logoE.png"
