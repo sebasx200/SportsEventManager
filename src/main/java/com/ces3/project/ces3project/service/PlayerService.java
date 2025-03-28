@@ -1,7 +1,10 @@
 package com.ces3.project.ces3project.service;
 
 import com.ces3.project.ces3project.dao.PlayerDAO;
+import com.ces3.project.ces3project.dto.PaginationDTO;
+import com.ces3.project.ces3project.dto.TeamDTO;
 import com.ces3.project.ces3project.model.Player;
+import com.ces3.project.ces3project.model.Team;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +12,11 @@ import java.util.Optional;
 
 public class PlayerService {
     PlayerDAO playerDAO;
+    TeamService teamService;
 
-    public PlayerService(PlayerDAO playerDAO) {
+    public PlayerService(PlayerDAO playerDAO, TeamService teamService) {
         this.playerDAO = playerDAO;
+        this.teamService = teamService;
     }
     public Optional<Player> getPlayerById(Integer id){
         return playerDAO.get(id);
@@ -26,7 +31,16 @@ public class PlayerService {
     }
 
     public List<Player> getAllPlayers(){
-        return playerDAO.getAll();
+        List<Player> players = playerDAO.getAll();
+        for (Player player : players) {
+            Optional<Team> teamOptional = teamService.getTeamById(player.getTeamId());
+            if (teamOptional.isPresent()) {
+                Team team = teamOptional.get();
+                TeamDTO teamDTO = new TeamDTO(team.getName());
+                player.setTeam(teamDTO);
+            }
+        }
+        return players;
     }
 
     public void createPlayer(Player player) {
@@ -34,6 +48,11 @@ public class PlayerService {
         if (existingPlayer.isPresent()) {
             throw new IllegalArgumentException("Player with ID " + player.getId() + " already exists.");
         }
+        Optional<Team> team = teamService.getTeamById(player.getTeamId());
+        if (team.isEmpty()) {
+            throw new IllegalArgumentException("Team with ID " + player.getTeamId() + " does not exist.");
+        }
+        teamService.addPlayerToTeam(player, player.getTeamId());
         playerDAO.save(player);
     }
     public void updatePlayer(Integer id, Player player) {
@@ -41,5 +60,9 @@ public class PlayerService {
     }
     public void deletePlayer(Player player) {
         playerDAO.delete(player);
+    }
+
+    public void setTeamService(TeamService teamService) {
+        this.teamService = teamService;
     }
 }

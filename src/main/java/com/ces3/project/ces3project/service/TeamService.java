@@ -1,6 +1,7 @@
 package com.ces3.project.ces3project.service;
 
 import com.ces3.project.ces3project.dao.TeamDAO;
+import com.ces3.project.ces3project.dto.PaginationDTO;
 import com.ces3.project.ces3project.dto.PlayerDTO;
 import com.ces3.project.ces3project.model.Player;
 import com.ces3.project.ces3project.model.Team;
@@ -27,8 +28,12 @@ public class TeamService {
         return teamDAO.get(id);
     }
 
-    public List<Team> getAllTeams() {
-        List<Team> teams = teamDAO.getAll();
+    public List<Team> getAllTeams(PaginationDTO paginationDTO) {
+
+        int page = (paginationDTO.getPage() == null || paginationDTO.getPage() < 1) ? 1 : paginationDTO.getPage();
+        int size = (paginationDTO.getSize() == null || paginationDTO.getSize() < 1) ? 10 : paginationDTO.getSize();
+
+        List<Team> teams = teamDAO.getAllTeams(page, size);
 
         if (teams.isEmpty()) {
             throw new NoSuchElementException("There are no teams in the database");
@@ -42,9 +47,38 @@ public class TeamService {
             } else {
                 team.setPlayers(new ArrayList<>());
             }
-            team.setTeamPlayers(null);
         }
         return teams;
+    }
+
+    public void addPlayerToTeam(Player player, Integer teamId) {
+        Optional<Team> teamOptional = teamDAO.get(teamId);
+        if (teamOptional.isEmpty()) {
+            throw new NoSuchElementException("Team with ID " + teamId + " not found.");
+        }
+        Team team = teamOptional.get();
+        if (team.getTeamPlayers() == null) {
+            team.setTeamPlayers(new ArrayList<>());
+        }
+        if (!validatePlayerNumber(player.getNumber(), teamId)){
+            throw new IllegalArgumentException("Player number " + player.getNumber() + " is already in use.");
+        }
+        team.addPlayer(player.getId());
+        teamDAO.update(teamId, team);
+    }
+
+    public boolean validatePlayerNumber(Integer playerNumber, Integer teamId) {
+        Optional<Team> team = teamDAO.get(teamId);
+        if (team.isEmpty() || team.get().getTeamPlayersIds() == null || team.get().getTeamPlayersIds().isEmpty()) {
+            return true;
+        }
+        List<Player> players = playerService.getPlayersByIds(team.get().getTeamPlayersIds());
+        for (Player player : players) {
+            if (player.getNumber().equals(playerNumber)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static ArrayList<PlayerDTO> getPlayerDTOS(ArrayList<Player> players) {
@@ -62,7 +96,6 @@ public class TeamService {
         }
         return playerBasicInfoList;
     }
-
 
     public void createTeam(Team team) {
         DuplicateStatus status = isTeamDuplicate(team);

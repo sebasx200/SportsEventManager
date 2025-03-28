@@ -3,6 +3,7 @@ package com.ces3.project.ces3project.controller;
 import com.ces3.project.ces3project.config.ServiceConfig;
 import com.ces3.project.ces3project.dao.PlayerDAO;
 import com.ces3.project.ces3project.dao.TeamDAO;
+import com.ces3.project.ces3project.dto.PaginationDTO;
 import com.ces3.project.ces3project.model.Team;
 import com.ces3.project.ces3project.service.PlayerService;
 import com.ces3.project.ces3project.service.TeamService;
@@ -49,11 +50,19 @@ public class TeamServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pageParam = req.getParameter("page");
+        String sizeParam = req.getParameter("size");
+
+        Integer page = (pageParam != null) ? Integer.parseInt(pageParam) : null;
+        Integer size = (sizeParam != null) ? Integer.parseInt(sizeParam) : null;
+
+        PaginationDTO paginationDTO = new PaginationDTO(page, size);
+
         resp.setContentType("application/json");
         Gson gson = new Gson();
         PrintWriter out = resp.getWriter();
         if (req.getParameter("id") == null) {
-            out.print(gson.toJson(teamService.getAllTeams()));
+            out.print(gson.toJson(teamService.getAllTeams(paginationDTO)));
         } else {
             Optional<Team> team = teamService.getTeamById(Integer.valueOf(req.getParameter("id")));
             if (team.isPresent()) {
