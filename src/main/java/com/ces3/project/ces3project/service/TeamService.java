@@ -7,10 +7,7 @@ import com.ces3.project.ces3project.model.Player;
 import com.ces3.project.ces3project.model.Team;
 import com.ces3.project.ces3project.utils.UtilMethods;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 public class TeamService {
 
@@ -138,4 +135,26 @@ public class TeamService {
         NAME_AND_SPORT_DUPLICATE,
         NO_DUPLICATE
     }
+
+    public Map<String, Double> getAvgPlayerPerTeam() {
+        List<Team> teams = teamDAO.getAll();
+        Map<String, Double> avgPlayerCount = new HashMap<>();
+
+        for (Team team : teams) {
+            String teamName = team.getName();
+            if (team.getTeamPlayersIds() != null && !team.getTeamPlayersIds().isEmpty()) {
+                int playerCount = team.getTeamPlayers().size();
+                avgPlayerCount.put(teamName, (double) playerCount);
+            }
+        }
+        double totalPlayers = avgPlayerCount.values().stream().mapToDouble(Double::doubleValue).sum();
+        double totalTeams = avgPlayerCount.size();
+
+        Map<String, Double> averagePerTeam = new HashMap<>();
+        for (Map.Entry<String, Double> entry : avgPlayerCount.entrySet()) {
+            averagePerTeam.put(entry.getKey(), totalPlayers / totalTeams);
+        }
+        return averagePerTeam;
+    }
+
 }

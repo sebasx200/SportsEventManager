@@ -6,9 +6,9 @@ import com.ces3.project.ces3project.model.Event;
 import com.ces3.project.ces3project.model.Team;
 import com.ces3.project.ces3project.utils.UtilMethods;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class EventService {
     EventDAO eventDAO;
@@ -26,7 +26,7 @@ public class EventService {
 
     public List<Event> getAllEvents(){
         if (eventDAO.getAll().isEmpty()){
-            throw new ArrayIndexOutOfBoundsException("There are no events in the database");
+            throw new NoSuchElementException("There are no events in the database");
         }
         return eventDAO.getAll();
     }
@@ -57,5 +57,53 @@ public class EventService {
     }
     public void deleteEvent(Event event) {
         eventDAO.delete(event);
+    }
+
+    public Map<String, Long> getEventsPerSport() {
+        List<Event> events = eventDAO.getAll();
+        return events.stream()
+                .collect(Collectors.groupingBy(Event::getSport, Collectors.counting()));
+    }
+
+    public Map<String, Long> getEventsPerTeam() {
+        List<Event> events = eventDAO.getAll();
+
+        Map<String, Long> teamEventCount = events.stream()
+                .flatMap(event -> event.getTeamsId().stream()
+                        .map(teamId -> teamService.getTeamById(teamId)
+                                .map(team -> new AbstractMap.SimpleEntry<>(team.getName(), 1L))
+                                .orElse(null)))
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.summingLong(Map.Entry::getValue)));
+
+        return teamEventCount.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+    }
+
+    public Map<String, Double> getOccupancyPerEvent() {
+        List<Event> events = eventDAO.getAll();
+
+        Map<String, Double> occupancyMap = new HashMap<>();
+        DecimalFormat df = new DecimalFormat("#.00");
+
+        for (Event event : events) {
+            String eventName = event.getName();
+            Integer capacity = event.getCapacity();
+            Integer soldTickets = event.getSoldTickets();
+
+            double occupancyPercentage = 0.0;
+            if (capacity != null && capacity > 0) {
+                occupancyPercentage = (double) soldTickets / capacity * 100;
+                occupancyPercentage = Math.round(occupancyPercentage * 100.0) / 100.0;
+            }
+            occupancyMap.put(eventName, occupancyPercentage);
+        }
+        return occupancyMap;
     }
 }
