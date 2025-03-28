@@ -39,6 +39,13 @@ public class PlayerServlet extends HttpServlet {
         resp.setContentType("application/json");
         Gson gson = new Gson();
         PrintWriter out = resp.getWriter();
+
+        String action = req.getParameter("action");
+        if ("transfer".equalsIgnoreCase(action)) {
+            handlePlayerTransferRequest(req, resp);
+            return;
+        }
+
         if(req.getParameter("id") == null) {
             out.print(gson.toJson(playerService.getAllPlayers()));
         } else {
@@ -51,7 +58,24 @@ public class PlayerServlet extends HttpServlet {
             }
         }
         out.flush();
-        super.doGet(req, resp);
+    }
+
+    private void handlePlayerTransferRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+
+        try {
+            int reqPlayerId = Integer.parseInt(req.getParameter("playerId"));
+            int reqTeamId = Integer.parseInt(req.getParameter("newTeam"));
+            playerService.transferPlayerToTeam(reqPlayerId, reqTeamId);
+            resp.setStatus(HttpServletResponse.SC_OK);
+            out.print("{\"message\": \"Player transferred successfully\"}");
+
+        } catch(IllegalArgumentException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.print("{\"message\": \"" + e.getMessage() + "\"}");
+        }
+        out.flush();
     }
 
     @Override

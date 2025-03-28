@@ -1,7 +1,6 @@
 package com.ces3.project.ces3project.service;
 
 import com.ces3.project.ces3project.dao.PlayerDAO;
-import com.ces3.project.ces3project.dto.PaginationDTO;
 import com.ces3.project.ces3project.dto.TeamDTO;
 import com.ces3.project.ces3project.model.Player;
 import com.ces3.project.ces3project.model.Team;
@@ -54,6 +53,33 @@ public class PlayerService {
         }
         teamService.addPlayerToTeam(player, player.getTeamId());
         playerDAO.save(player);
+    }
+    public void transferPlayerToTeam(Integer playerId, Integer teamId) {
+        Optional<Player> existingPlayer = playerDAO.get(playerId);
+        if (existingPlayer.isEmpty()) {
+            throw new IllegalArgumentException("Player with ID " + playerId + " does not exist.");
+        }
+        Optional<Team> existingTeam = teamService.getTeamById(teamId);
+        if (existingTeam.isEmpty()) {
+            throw new IllegalArgumentException("Team with ID " + teamId + " does not exist.");
+        }
+
+        Player player = existingPlayer.get();
+        Team team = existingTeam.get();
+
+        if (team.getTeamPlayers() != null && team.getTeamPlayers().contains(playerId)) {
+            throw new IllegalArgumentException("The player with ID " + playerId + " already belongs to the team.");
+        }
+
+        Optional<Team> oldTeamPlayer = teamService.getTeamById(player.getTeamId());
+        if (oldTeamPlayer.isPresent()) {
+            Team oldTeam = oldTeamPlayer.get();
+            oldTeam.removePlayer(playerId);
+            teamService.updateTeam(oldTeam.getId(), oldTeam);
+        }
+        player.setTeamId(teamId);
+        teamService.addPlayerToTeam(player, team.getId());
+        teamService.updateTeam(team.getId(), team);
     }
     public void updatePlayer(Integer id, Player player) {
         playerDAO.update(id, player);
