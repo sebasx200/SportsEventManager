@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @WebServlet(name = "event-servlet", value = "/events")
@@ -48,7 +49,7 @@ public class EventServlet extends HttpServlet {
                     out.print("{\"message\": \"Event not found\"}");
                 }
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (NoSuchElementException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             out.print("{\"message\": \"There are no events in the database\"}");
         } catch (NumberFormatException e) {
