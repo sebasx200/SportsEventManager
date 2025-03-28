@@ -97,6 +97,14 @@ public class Team {
         this.players = players;
     }
 
+    public void addPlayer(Integer playerId) {
+        this.teamPlayers.add(playerId);
+    }
+
+    public void removePlayer(Integer playerId) {
+        this.teamPlayers.remove(playerId);
+    }
+
     @Override
     public String toString() {
         return "Team{" +

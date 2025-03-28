@@ -17,11 +17,14 @@ public class ServiceConfig {
 
     static {
         playerDAO = new PlayerDAO();
-        playerService = new PlayerService(playerDAO);
         teamDAO = new TeamDAO();
-        teamService = new TeamService(teamDAO, playerService);
         eventDAO = new EventDAO();
+
+        playerService = new PlayerService(playerDAO, null);
+        teamService = new TeamService(teamDAO, playerService);
         eventService = new EventService(eventDAO, teamService);
+
+        playerService.setTeamService(teamService);
     }
 
     public static PlayerService getPlayerService() {

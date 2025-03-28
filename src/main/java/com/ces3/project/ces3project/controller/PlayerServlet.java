@@ -2,6 +2,7 @@ package com.ces3.project.ces3project.controller;
 
 import com.ces3.project.ces3project.config.ServiceConfig;
 import com.ces3.project.ces3project.dao.PlayerDAO;
+import com.ces3.project.ces3project.dto.PaginationDTO;
 import com.ces3.project.ces3project.model.Player;
 import com.ces3.project.ces3project.service.PlayerService;
 import com.ces3.project.ces3project.utils.UtilMethods;
@@ -30,42 +31,6 @@ public class PlayerServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         playerService = ServiceConfig.getPlayerService();
-
-        playerService.createPlayer(new Player(
-                1,
-                "Alberto",
-                "Rodríguez",
-                new Date(19951005),
-                "Colombiano",
-                "Mediocampista",
-                10,
-                1,
-                true
-        ));
-
-        playerService.createPlayer(new Player(
-                2,
-                "Carlos",
-                "González",
-                new Date(19981215),
-                "Mexicano",
-                "Delantero",
-                9,
-                2,
-                true
-        ));
-
-        playerService.createPlayer(new Player(
-                3,
-                "Juan",
-                "Martínez",
-                new Date(19920723),
-                "Argentino",
-                "Defensor",
-                5,
-                3,
-                false
-        ));
         super.init();
     }
 

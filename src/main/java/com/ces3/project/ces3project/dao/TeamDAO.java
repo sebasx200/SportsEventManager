@@ -2,10 +2,7 @@ package com.ces3.project.ces3project.dao;
 
 import com.ces3.project.ces3project.model.Team;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 public class TeamDAO implements Dao<Team> {
 
@@ -21,6 +18,21 @@ public class TeamDAO implements Dao<Team> {
     @Override
     public List<Team> getAll() {
         return new ArrayList<>(teams);
+    }
+    public List<Team> getAllTeams(Integer page, Integer size) {
+        if (page == null || page < 1) {
+            page = 1;
+        }
+        if (size == null || size < 1) {
+            size = 10;
+        }
+
+        int fromIndex = (page - 1) * size;
+        if (fromIndex >= teams.size()) {
+            return Collections.emptyList();
+        }
+        int toIndex = Math.min(fromIndex + size, teams.size());
+        return teams.subList(fromIndex, toIndex);
     }
 
     @Override

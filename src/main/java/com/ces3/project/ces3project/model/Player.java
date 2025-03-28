@@ -1,5 +1,7 @@
 package com.ces3.project.ces3project.model;
 
+import com.ces3.project.ces3project.dto.TeamDTO;
+
 import java.util.Date;
 
 public class Player {
@@ -12,6 +14,7 @@ public class Player {
     private String position;
     private Integer number;
     private Integer teamId;
+    private TeamDTO team;
     private Boolean isActive;
 
     public Player() {
@@ -93,6 +96,14 @@ public class Player {
         this.teamId = teamId;
     }
 
+    public TeamDTO getTeam() {
+        return team;
+    }
+
+    public void setTeam(TeamDTO team) {
+        this.team = team;
+    }
+
     public Boolean getActive() {
         return isActive;
     }
@@ -111,7 +122,7 @@ public class Player {
                 ", nationality='" + nationality + '\'' +
                 ", position='" + position + '\'' +
                 ", number=" + number +
-                ", teamId=" + teamId +
+                ", teamName=" + team +
                 ", isActive=" + isActive +
                 '}';
     }
