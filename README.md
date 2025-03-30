@@ -1,4 +1,4 @@
-# GestorEventosDeportivos
+# Sports Event Manager
 This is the CES3 project repository.
 
 # Summary
@@ -71,7 +71,7 @@ To achieve that the structure is the following:
 # Folder and content explanation
 
 ### **`config`**
-Due all the data is located in memory it is necessary to handle the data in java collections, to avoid getting null exception accessing data between services.
+Due to all the data is located in memory it is necessary to handle the data in java collections, to avoid getting null exception accessing data between services.
 
 ### **`controller`**
 In this folder are located the Servlets classes which handles the https request made to the different endpoint configured for the API.
@@ -119,7 +119,7 @@ The **`teams`** Manages the teams involved in the sports events. It defines team
 ---
 ### Team Endpoints
 
-### 1. Retrieve all the teams
+### 1. Retrieve all teams
 
 **`GET`** /teams
 
@@ -128,7 +128,7 @@ The **`teams`** Manages the teams involved in the sports events. It defines team
 ```json
 [
   {
-    "id": 825,
+    "id": 492,
     "name": "Deportivo Tapitas",
     "sport": "Football",
     "city": "Medellín",
@@ -137,7 +137,7 @@ The **`teams`** Manages the teams involved in the sports events. It defines team
     "players": []
   },
   {
-    "id": 464,
+    "id": 177,
     "name": "Escombros FC",
     "sport": "Football",
     "city": "La Pintada",
@@ -148,7 +148,54 @@ The **`teams`** Manages the teams involved in the sports events. It defines team
 ]
 ```
 
-### 2. Retrieve teams with pagination and size
+### 2. Retrieve one team by id
+
+**`GET`** /teams?id=492
+
+**Response:**
+
+```json
+{
+    "id": 492,
+    "name": "Deportivo Tapitas",
+    "sport": "Football",
+    "city": "Medellín",
+    "fundationDate": "Jan 1, 1970, 12:34:20?AM",
+    "logo": "logoD.png",
+    "players": []
+}
+```
+
+### 3. Retrieve team with players
+
+**`GET`** /teams?id=492
+
+**Response:**
+
+```json
+{
+  "id": 492,
+  "name": "Deportivo Tapitas",
+  "sport": "Football",
+  "city": "Medellín",
+  "fundationDate": "Jan 1, 1970, 12:34:20?AM",
+  "logo": "logoD.png",
+  "teamPlayers": [
+    1
+  ],
+  "players": [
+    {
+      "name": "Rodrigo",
+      "lastName": "Rodriguez",
+      "position": "Goalkeeper",
+      "number": 1,
+      "isActive": true
+    }
+  ]
+}
+```
+
+### 4. Retrieve teams with pagination and size
 
 **`GET`** /teams?page=1&size=1
 
@@ -157,7 +204,7 @@ The **`teams`** Manages the teams involved in the sports events. It defines team
 ```json
 [
   {
-    "id": 825,
+    "id": 492,
     "name": "Deportivo Tapitas",
     "sport": "Football",
     "city": "Medellín",
@@ -167,7 +214,7 @@ The **`teams`** Manages the teams involved in the sports events. It defines team
   }
 ]
 ```
-### 2. Retrieve teams with pagination and size
+### 5. Create team with players
 
 **`POST`** /teams
 
@@ -192,3 +239,261 @@ The **`teams`** Manages the teams involved in the sports events. It defines team
 }
 ```
 
+### 6. Create team without players
+
+**`POST`** /teams
+
+**Body:**
+
+```json
+{
+    "name": "Los feos",
+    "sport": "Football",
+    "city": "Medellin",
+    "fundationDate": 20060101,
+    "logo": "logoE.png",
+    "teamPlayers": []
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Team created successfully"
+}
+```
+
+---
+
+### Player Endpoints
+
+### 1. Retrieve all players
+
+**`GET`** /players
+
+**Response:**
+
+```json
+[
+    {
+        "id": 1,
+        "name": "Rodrigo",
+        "lastName": "Rodriguez",
+        "birthDate": "Jan 1, 1970, 12:33:21?AM",
+        "nationality": "Colombian",
+        "position": "Goalkeeper",
+        "number": 1,
+        "teamId": 492,
+        "team": {
+            "name": "Deportivo Tapitas"
+        },
+        "isActive": true
+    },
+    {
+        "id": 2,
+        "name": "Ramiro",
+        "lastName": "Ramirez",
+        "birthDate": "Jan 1, 1970, 12:33:21?AM",
+        "nationality": "Colombian",
+        "position": "Goalkeeper",
+        "number": 13,
+        "teamId": 177,
+        "team": {
+            "name": "Escombros FC"
+        },
+        "isActive": true
+    }
+]
+```
+
+### 2. Retrieve one player by id
+
+**`GET`** /players?id=1
+
+**Response:**
+
+```json
+{
+  "id": 1,
+  "name": "Rodrigo",
+  "lastName": "Rodriguez",
+  "birthDate": "Jan 1, 1970, 12:33:21?AM",
+  "nationality": "Colombian",
+  "position": "Goalkeeper",
+  "number": 1,
+  "teamId": 492,
+  "team": {
+    "name": "Deportivo Tapitas"
+  },
+  "isActive": true
+}
+```
+
+### 3. Transfer player to another team by player id and team by
+
+**`GET`** /players?action=transfer&playerId=1&newTeam=177
+
+**Response:**
+
+```json
+{
+    "message": "Player transferred successfully."
+}
+```
+
+### 4. Create player
+
+**`POST`** /players
+
+**Body:**
+
+```json
+{
+    "id": 1,
+    "name": "Ramiro",
+    "lastName": "Ramirez",
+    "birthDate": 20001210,
+    "nationality": "Colombian",
+    "position": "Goalkeeper",
+    "number": 1,
+    "teamId": 492,
+    "isActive": true
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Player created successfully"
+}
+```
+
+---
+
+### Events Endpoints
+
+### 1. Retrieve all events
+
+**`GET`** /events
+
+**Response:**
+
+```json
+[
+  {
+    "id": 1010,
+    "name": "Champions League Final",
+    "date": "Jan 1, 1970, 12:37:30?AM",
+    "place": "Wembley Stadium",
+    "sport": "Football",
+    "teamsId": [
+      492,
+      177
+    ],
+    "capacity": 90000,
+    "soldTickets": 85000,
+    "status": "SCHEDULED"
+  },
+  {
+    "id": 222,
+    "name": "Europa League Final",
+    "date": "Jan 1, 1970, 12:37:30?AM",
+    "place": "Wembley Stadium",
+    "sport": "Football",
+    "teamsId": [
+      492,
+      177
+    ],
+    "capacity": 90000,
+    "soldTickets": 85000,
+    "status": "SCHEDULED"
+  }
+]
+```
+
+### 2. Retrieve event by id
+
+**`GET`** /events?id=1010
+
+**Response:**
+
+```json
+{
+    "value": {
+        "id": 1010,
+        "name": "Champions League Final",
+        "date": "Jan 1, 1970, 12:37:30?AM",
+        "place": "Wembley Stadium",
+        "sport": "Football",
+        "teamsId": [
+            492,
+            177
+        ],
+        "capacity": 90000,
+        "soldTickets": 85000,
+        "status": "SCHEDULED"
+    }
+}
+```
+
+### 3. Create event
+
+**`POST`** /events
+
+**Body:**
+
+```json
+{
+  "name": "Champions League Final",
+  "date": 20250610,
+  "place": "Wembley Stadium",
+  "sport": "Football",
+  "teamsId": [492, 177],
+  "capacity": 90000,
+  "soldTickets": 85000,
+  "status": "SCHEDULED"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Event created successfully"
+}
+
+```
+
+---
+
+### 1. Retrieve all statistics
+
+**`GET`** /statistics
+
+**Response:**
+
+```json
+{
+    "eventsPerSport": {
+        "Football": 2
+    },
+    "teamsWithMostEvents": {
+        "Deportivo Tapitas": 2,
+        "Escombros FC": 2
+    },
+    "avgPlayersPerTeam": {
+        "Deportivo Tapitas": 1.0,
+        "Escombros FC": 1.0
+    },
+    "occupancyPerEvent": {
+        "Champions League Final": 94.44,
+        "Europa League Final": 94.44
+    }
+}
+```
+
+---
+
+The project was tested using Tomcat 9.0.100 as server
